@@ -66,12 +66,28 @@ class SongsHandler {
     }
   }
 
-  async getSongsHandler() {
+  async getSongsHandler(request) {
     const songs = await this._service.getSongs();
+
+    let filteredSongs = songs;
+    const { title, performer } = request.query;
+
+    if (title) {
+      filteredSongs = songs.filter((song) =>
+        song.title.toLowerCase().includes(title.toLowerCase())
+      );
+    }
+
+    if (performer) {
+      filteredSongs = songs.filter((song) =>
+        song.performer.toLowerCase().includes(performer.toLowerCase())
+      );
+    }
+
     return {
       status: 'success',
       data: {
-        songs: songs.map((song) => ({
+        songs: filteredSongs.map((song) => ({
           id: song.id,
           title: song.title,
           performer: song.performer,
