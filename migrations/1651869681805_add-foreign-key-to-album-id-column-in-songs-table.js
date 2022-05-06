@@ -1,6 +1,5 @@
 /* eslint-disable camelcase */
 exports.up = (pgm) => {
-  // memberikan constraint foreign key pada album_id terhadap kolom id dari tabel albums
   pgm.addConstraint(
     'songs',
     'fk_songs.album_id_albums.id',
@@ -9,6 +8,5 @@ exports.up = (pgm) => {
 };
 
 exports.down = (pgm) => {
-  // menghapus constraint fk_songs.albumId_albums.id pada tabel notes
   pgm.dropConstraint('songs', 'fk_songs.album_id_albums.id');
 };
