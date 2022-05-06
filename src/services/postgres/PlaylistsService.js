@@ -38,10 +38,10 @@ class PlaylistsService {
     return result.rows;
   }
 
-  async getPlaylistById(id) {
+  async getPlaylistById(playlistId) {
     const query = {
       text: 'SELECT playlists.id,playlists.name,users.username FROM playlists INNER JOIN users ON playlists.owner=users.id WHERE playlists.id = $1',
-      values: [id],
+      values: [playlistId],
     };
     const result = await this._pool.query(query);
 

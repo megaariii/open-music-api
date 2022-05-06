@@ -8,7 +8,7 @@ class PlaylistSongsService {
     this._pool = new Pool();
   }
 
-  async addSongsToPlaylist(playlistId, songId) {
+  async addSongsToPlaylist({ id: playlistId, songId }) {
     const id = `playlist-song-${nanoid(16)}`;
     const query = {
       text: 'INSERT INTO playlist_songs VALUES($1, $2, $3) RETURNING id',
@@ -16,9 +16,11 @@ class PlaylistSongsService {
     };
     const result = await this._pool.query(query);
 
-    if (!result.rows.id) {
+    if (!result.rows[0].id) {
       throw new InvariantError('Lagu gagal ditambahkan ke Playlist');
     }
+
+    return result.rows[0].id;
   }
 
   async getSongsFromPlaylist(playlistId) {
