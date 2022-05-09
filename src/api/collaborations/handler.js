@@ -40,7 +40,7 @@ class CollaborationsHandler {
         response.code(error.statusCode);
         return response;
       }
-      // Server ERROR!
+
       const response = h.response({
         status: 'error',
         message: 'Maaf, terjadi kegagalan pada server kami.',
@@ -58,6 +58,7 @@ class CollaborationsHandler {
       const { playlistId, userId } = request.payload;
 
       await this._playlistsService.verifyPlaylistOwner(playlistId, owner);
+      await this._collaborationsService.verifyCollaborator(playlistId, userId);
       await this._collaborationsService.deleteCollaboration(playlistId, userId);
 
       return {
@@ -74,7 +75,6 @@ class CollaborationsHandler {
         return response;
       }
 
-      // Server ERROR!
       const response = h.response({
         status: 'error',
         message: 'Maaf, terjadi kegagalan pada server kami.',

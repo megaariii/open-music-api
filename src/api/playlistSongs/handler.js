@@ -23,6 +23,12 @@ class PlaylistSongsHandler {
       await this._playlistsService.verifyPlaylistAccess(id, owner);
       await this._playlistSongsService.verifySongExist(songId);
       await this._playlistSongsService.addSongsToPlaylist({ id, songId });
+      await this._playlistsService.addPlaylistActivity(
+        id,
+        songId,
+        owner,
+        'add'
+      );
 
       const response = h.response({
         status: 'success',
@@ -40,7 +46,6 @@ class PlaylistSongsHandler {
         return response;
       }
 
-      // Server ERROR!
       const response = h.response({
         status: 'error',
         message: 'Maaf, terjadi kegagalan pada server kami.',
@@ -78,7 +83,6 @@ class PlaylistSongsHandler {
         return response;
       }
 
-      // Server ERROR!
       const response = h.response({
         status: 'error',
         message: 'Maaf, terjadi kegagalan pada server kami.',
@@ -97,6 +101,12 @@ class PlaylistSongsHandler {
 
       await this._playlistsService.verifyPlaylistAccess(id, owner);
       await this._playlistSongsService.deleteSongFromPlaylistById(id, songId);
+      await this._playlistsService.addPlaylistActivity(
+        id,
+        songId,
+        owner,
+        'delete'
+      );
 
       return {
         status: 'success',
@@ -112,7 +122,6 @@ class PlaylistSongsHandler {
         return response;
       }
 
-      // Server ERROR!
       const response = h.response({
         status: 'error',
         message: 'Maaf, terjadi kegagalan pada server kami.',

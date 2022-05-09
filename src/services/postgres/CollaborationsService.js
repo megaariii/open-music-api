@@ -49,7 +49,6 @@ class CollaborationsService {
     }
   }
 
-  //  Cek APakah BUtuh atau tidak
   async verifyCollaborator(playlistId, userId) {
     const query = {
       text: 'SELECT * FROM collaborations WHERE playlist_id = $1 AND user_id = $2',

@@ -14,8 +14,8 @@ class AlbumsHandler {
   async postAlbumHandler(request, h) {
     try {
       this._validator.validateAlbumPayload(request.payload);
-      const { name = 'untitled', year } = request.payload;
 
+      const { name = 'untitled', year } = request.payload;
       const albumId = await this._service.addAlbum({ name, year });
 
       const response = h.response({
@@ -37,7 +37,6 @@ class AlbumsHandler {
         return response;
       }
 
-      // Server ERROR!
       const response = h.response({
         status: 'error',
         message: 'Maaf, terjadi kegagalan pada server kami.',
@@ -71,7 +70,6 @@ class AlbumsHandler {
         return response;
       }
 
-      // Server ERROR!
       const response = h.response({
         status: 'error',
         message: 'Maaf, terjadi kegagalan pada server kami.',
@@ -85,6 +83,7 @@ class AlbumsHandler {
   async putAlbumByIdHandler(request, h) {
     try {
       this._validator.validateAlbumPayload(request.payload);
+
       const { name, year } = request.payload;
       const { id } = request.params;
 
@@ -104,7 +103,6 @@ class AlbumsHandler {
         return response;
       }
 
-      // Server ERROR!
       const response = h.response({
         status: 'error',
         message: 'Maaf, terjadi kegagalan pada server kami.',
@@ -135,7 +133,6 @@ class AlbumsHandler {
         return response;
       }
 
-      // Server ERROR!
       const response = h.response({
         status: 'error',
         message: 'Maaf, terjadi kegagalan pada server kami.',
