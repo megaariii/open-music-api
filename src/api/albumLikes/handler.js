@@ -3,6 +3,9 @@ const ClientError = require('../../exceptions/ClientError');
 class AlbumLikesHandler {
   constructor(service) {
     this._service = service;
+
+    this.postAlbumLikeHandler = this.postAlbumLikeHandler.bind(this);
+    this.getAlbumLikeHandler = this.getAlbumLikeHandler.bind(this);
   }
 
   async postAlbumLikeHandler(request, h) {
@@ -10,7 +13,8 @@ class AlbumLikesHandler {
       const { id: albumId } = request.params;
       const { id: userId } = request.auth.credentials;
 
-      await this._service.addAlbumLike(userId, albumId);
+      await this._service.verifyAlbumExist(albumId);
+      await this._service.addLikeUnlike(userId, albumId);
 
       const response = h.response({
         status: 'success',

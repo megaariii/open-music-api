@@ -151,6 +151,7 @@ const init = async () => {
       plugin: _exports,
       options: {
         service: ProducerService,
+        playlistsService,
         validator: ExportsValidator,
       },
     },
@@ -158,7 +159,7 @@ const init = async () => {
       plugin: uploads,
       options: {
         service: storageService,
-        playlistsService,
+        albumsService,
         validator: UploadsValidator,
       },
     },

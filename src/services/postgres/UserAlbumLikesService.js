@@ -68,6 +68,19 @@ class UserAlbumLikesService {
 
     return { likes: totalLike };
   }
+
+  async verifyAlbumExist(albumId) {
+    const query = {
+      text: 'SELECT * FROM songs WHERE id = $1',
+      values: [albumId],
+    };
+
+    const result = await this._pool.query(query);
+
+    if (!result.rows.length) {
+      throw new NotFoundError('Lagu tidak ditemukan');
+    }
+  }
 }
 
 module.exports = UserAlbumLikesService;

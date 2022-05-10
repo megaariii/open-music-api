@@ -11,8 +11,8 @@ class UploadsHandler {
 
   async postUploadImageHandler(request, h) {
     try {
-      const { id: albumId } = request.params;
       const { cover } = request.payload;
+      const { id: albumId } = request.params;
       this._validator.validateImageHeaders(cover.hapi.headers);
 
       const filename = await this._service.writeFile(cover, cover.hapi);
