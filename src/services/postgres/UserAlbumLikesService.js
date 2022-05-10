@@ -3,8 +3,9 @@ const { nanoid } = require('nanoid');
 const InvariantError = require('../../exceptions/InvariantError');
 
 class UserAlbumLikesService {
-  constructor() {
+  constructor(cacheService) {
     this._pool = new Pool();
+    this._cacheService = cacheService;
   }
 
   async addLikeUnlike(userId, albumId) {
@@ -20,6 +21,7 @@ class UserAlbumLikesService {
     } else {
       await this.unlikeAlbum(userId, albumId);
     }
+    await this._cacheService.delete(`likes:${albumId}`);
   }
 
   async likeAlbum(userId, albumId) {
@@ -51,13 +53,20 @@ class UserAlbumLikesService {
   }
 
   async getLikeAlbum(albumId) {
-    const query = {
-      text: 'SELECT user_id FROM user_album_likes WHERE album_id = $1',
-      values: [albumId],
-    };
-    const { rows } = await this._pool.query(query);
+    try {
+      const result = await this._cacheService.get(`likes:${albumId}`);
+      return { likes: JSON.parse(result), isCache: 1 };
+    } catch (error) {
+      const query = {
+        text: 'SELECT user_id FROM user_album_likes WHERE album_id = $1',
+        values: [albumId],
+      };
+      const { rows } = await this._pool.query(query);
 
-    return { likes: rows };
+      await this._cacheService.set(`likes:${albumId}`, JSON.stringify(rows));
+
+      return { likes: rows };
+    }
   }
 }
 

@@ -46,7 +46,7 @@ class AlbumLikesHandler {
   async getAlbumLikeHandler(request, h) {
     try {
       const { id: albumId } = request.params;
-      const { likes } = await this._service.getLikeAlbum(albumId);
+      const { likes, isCache = 0 } = await this._service.getLikeAlbum(albumId);
 
       const response = h.response({
         status: 'success',
@@ -55,6 +55,9 @@ class AlbumLikesHandler {
         },
       });
       response.code(200);
+
+      if (isCache) response.header('X-Data-Source', 'cache');
+
       return response;
     } catch (error) {
       if (error instanceof ClientError) {
