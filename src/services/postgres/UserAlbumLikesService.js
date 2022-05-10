@@ -1,7 +1,6 @@
 const { Pool } = require('pg');
 const { nanoid } = require('nanoid');
 const InvariantError = require('../../exceptions/InvariantError');
-const NotFoundError = require('../../exceptions/NotFoundError');
 
 class UserAlbumLikesService {
   constructor() {
@@ -33,53 +32,32 @@ class UserAlbumLikesService {
 
     const result = await this._pool.query(query);
 
-    if (!result.rows[0].id) {
+    if (!result.rows.length) {
       throw new InvariantError('Like gagal ditambahkan');
     }
-
-    return result.rows[0].id;
   }
 
   async unlikeAlbum(userId, albumId) {
     const query = {
-      text: 'DELETE FROM user_album_likes WHERE user_id = $1 AND album_id = $2',
+      text: 'DELETE FROM user_album_likes WHERE user_id = $1 AND album_id = $2 RETURNING id',
       values: [userId, albumId],
     };
 
     const result = await this._pool.query(query);
 
     if (!result.rows.length) {
-      throw new NotFoundError('Catatan gagal dihapus. Id tidak ditemukan');
+      throw new InvariantError('Like gagal ditambahkan');
     }
   }
 
-  async getLikeAlbum(albumid) {
+  async getLikeAlbum(albumId) {
     const query = {
       text: 'SELECT user_id FROM user_album_likes WHERE album_id = $1',
-      values: [albumid],
-    };
-    const result = await this._pool.query(query);
-
-    if (!result.rows.length) {
-      throw new NotFoundError('Like tidak ditemukan');
-    }
-
-    const totalLike = result.rows.length;
-
-    return { likes: totalLike };
-  }
-
-  async verifyAlbumExist(albumId) {
-    const query = {
-      text: 'SELECT * FROM songs WHERE id = $1',
       values: [albumId],
     };
+    const { rows } = await this._pool.query(query);
 
-    const result = await this._pool.query(query);
-
-    if (!result.rows.length) {
-      throw new NotFoundError('Lagu tidak ditemukan');
-    }
+    return { likes: rows };
   }
 }
 
